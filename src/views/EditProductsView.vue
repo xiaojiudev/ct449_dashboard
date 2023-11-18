@@ -44,9 +44,9 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
-import { ref } from 'vue';
 import type { UploadProps } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
 
@@ -66,6 +66,11 @@ const validateMessages = {
         range: '${label} must be between ${min} and ${max}',
     },
 };
+
+const router = useRouter();
+const route = useRoute();
+const productId = route.params.id;
+
 
 const formState = reactive({
     name: '',
@@ -92,6 +97,7 @@ const onFinish = async (values: any) => {
 
         const { name, price, description, image, category, quantity } = values;
 
+
         const file = image[0].originFileObj;
 
         const formData = new FormData();
@@ -111,14 +117,26 @@ const onFinish = async (values: any) => {
 
         isSubmitting.value = true;
 
-        const response = await axios.post('http://localhost:8080/api/v1/products', formData, config);
+        let response;
+
+        if (productId == 'null') {
+            response = await axios.post('http://localhost:8080/api/v1/products', formData, config);
+        } else {
+            response = await axios.patch(`http://localhost:8080/api/v1/products/${productId}`, formData, config);
+        }
 
         console.log(response);
         if (response.status == 201) {
             message.success("Created product successfully");
+            router.push({ name: 'products' });
+        } else if (response.status == 200) {
+            message.success("Updated product successfully");
+            router.push({ name: 'products' });
         } else {
             message.error("Something went wrong");
         }
+
+
     } catch (error) {
         message.error("Something went wrong" + error)
     }
@@ -127,9 +145,33 @@ const onFinish = async (values: any) => {
         isSubmitting.value = false;
     }
 
-
-
 };
+
+const fetchProductDetails = async () => {
+    try {
+        const response = await axios.get(`http://localhost:8080/api/v1/products/${productId}`);
+        const productDetails = response.data;
+
+
+        formState.name = productDetails.name;
+        formState.price = productDetails.price;
+        formState.description = productDetails.description;
+        formState.category = productDetails.category;
+        formState.quantity = productDetails.quantityInStock;
+
+
+    } catch (error) {
+        console.error('Error fetching product details:', error);
+        message.error("Error fetching product details:" + error)
+    }
+};
+
+
+
+onMounted(() => {
+    productId !== 'null' ? fetchProductDetails() : null;
+});
+
 </script>
   
   
