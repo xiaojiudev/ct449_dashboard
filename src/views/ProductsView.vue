@@ -10,7 +10,7 @@
                     <img :src="text" alt="" style="object-fit: cover; width: 100px; height: 100px;">
                 </template>
                 <template v-if="column.dataIndex === 'edit'">
-                    <a>Edit</a>
+                    <a @click="editProduct(text ?? null)">Edit</a>
                 </template>
                 <template v-else-if="column.dataIndex === 'delete'">
                     <a @click="deleteProduct(text)">Delete</a>
