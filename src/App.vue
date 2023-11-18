@@ -52,9 +52,6 @@ import Logout from './views/auth/Logout.vue';
                     <a-menu-item key="6">
                         <RouterLink to="/products">All products</RouterLink>
                     </a-menu-item>
-                    <a-menu-item key="8">
-                        <RouterLink to="/products/:id">Edit products</RouterLink>
-                    </a-menu-item>
                 </a-sub-menu>
                 <a-menu-item key="2">
                     <ShoppingCartOutlined />
