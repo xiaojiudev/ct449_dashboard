@@ -1,7 +1,7 @@
 <template>
     <a-breadcrumb style="margin: 16px 0">
         <a-breadcrumb-item>Products</a-breadcrumb-item>
-        <a-breadcrumb-item>Edit product</a-breadcrumb-item>
+        <a-breadcrumb-item>{{ productId == "null" ? "Add product": "Edit product" }}</a-breadcrumb-item>
     </a-breadcrumb>
     <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
         <!-- Content -->
@@ -19,19 +19,22 @@
                     <a-input-number v-model:value="formState.quantity" />
                 </a-form-item>
                 <a-form-item name="description" label="Description" :rules="[{ required: true }]">
-                    <a-textarea v-model:value="formState.description" />
+                    <!-- <a-textarea v-model:value="formState.description" /> -->
+
                 </a-form-item>
-                <a-form-item label="Image" name="image" :rules="[{ required: true }]">
+                <a-form-item label="Image" name="image" :rules="[{ required: imageUrl ? false : true }]">
                     <a-upload v-model:fileList="formState.image" :max-count="1" :before-upload="beforeUpload"
                         list-type="picture-card">
-                        <div>
+                        <img v-if="imageUrl" :src="imageUrl" alt="avatar" width="84" height="84"
+                            style="object-fit: cover;" />
+                        <div v-else>
                             <PlusOutlined />
                             <div style="margin-top: 8px">Upload</div>
                         </div>
                     </a-upload>
                 </a-form-item>
                 <a-form-item label="Category" name="category" :rules="[{ required: true }]">
-                    <a-select v-model:value="formState.category" placeholder="please select your zone">
+                    <a-select v-model:value="formState.category" placeholder="please select your category">
                         <a-select-option value="flower">Flower</a-select-option>
                     </a-select>
                 </a-form-item>
@@ -47,9 +50,9 @@
 import { reactive, ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
-import type { UploadProps } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
-
+import { PlusOutlined } from '@ant-design/icons-vue';
+import type { UploadProps } from 'ant-design-vue';
 
 const layout = {
     labelCol: { span: 8 },
@@ -81,10 +84,14 @@ const formState = reactive({
     category: undefined,
 });
 
+const imageUrl = ref<string>('');
+
+
 const fileList = ref<UploadProps['fileList']>([]);
 
 const beforeUpload: UploadProps['beforeUpload'] = file => {
     fileList.value = [...(fileList.value || []), file];
+    imageUrl.value = '';
     return false;
 };
 
@@ -98,13 +105,17 @@ const onFinish = async (values: any) => {
         const { name, price, description, image, category, quantity } = values;
 
 
-        const file = image[0].originFileObj;
 
         const formData = new FormData();
         formData.append('name', name);
         formData.append('price', price);
         formData.append('description', description);
-        formData.append('image', file);
+
+        if (image) {
+            const file = image[0].originFileObj;
+            formData.append('image', file);
+        }
+
         formData.append('category', category);
         formData.append('quantityInStock', quantity);
 
@@ -147,17 +158,20 @@ const onFinish = async (values: any) => {
 
 };
 
+
 const fetchProductDetails = async () => {
     try {
         const response = await axios.get(`http://localhost:8080/api/v1/products/${productId}`);
-        const productDetails = response.data;
+        const productDetails = response.data.product;
 
+        formState.name = productDetails.name || "";
+        formState.price = productDetails.price || undefined;
+        formState.description = productDetails.description || '';
+        formState.category = productDetails.category || undefined;
+        formState.quantity = productDetails.quantityInStock || undefined;
+        imageUrl.value = productDetails.image;
+        console.log(formState.image);
 
-        formState.name = productDetails.name;
-        formState.price = productDetails.price;
-        formState.description = productDetails.description;
-        formState.category = productDetails.category;
-        formState.quantity = productDetails.quantityInStock;
 
 
     } catch (error) {
@@ -166,10 +180,10 @@ const fetchProductDetails = async () => {
     }
 };
 
-
-
-onMounted(() => {
-    productId !== 'null' ? fetchProductDetails() : null;
+onMounted(async () => {
+    if (productId !== 'null') {
+        await fetchProductDetails();
+    }
 });
 
 </script>
