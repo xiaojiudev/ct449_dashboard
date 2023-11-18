@@ -55,7 +55,6 @@ router.beforeEach((to, from, next) => {
 
   if (to.matched.some(route => route.meta.requiresAuth)) {
 
-    // const isAuthenticated = checkIfAuthenticated();
     const token = getCookie('token'); 
 
     if (!token) {
@@ -68,11 +67,6 @@ router.beforeEach((to, from, next) => {
     next();
   }
 })
-
-function checkIfAuthenticated() {
-  const token = null;
-  return !!token; 
-}
 
 
 export function getCookie(name) {
