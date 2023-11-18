@@ -4,7 +4,7 @@
         <a-breadcrumb-item>All Products</a-breadcrumb-item>
     </a-breadcrumb>
     <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
-        <a-button type="primary" style="margin-bottom: 16px" @click="editProduct(null)">
+        <a-button type="primary" size="large"  style="float: right; margin-bottom: 16px;" @click="editProduct(null)">
             Add product
         </a-button>
         <a-table :columns="columns" :data-source="data" :pagination="{ pageSize: 8 }" rowKey="id" bordered>
@@ -17,12 +17,17 @@
                         {{ text.toUpperCase() }}
                     </a-tag>
                 </template>
-                <template v-if="column.dataIndex === 'edit'">
-                    <a @click="editProduct(text ?? null)">Edit</a>
+                <template v-if="column.dataIndex === 'action'">
+                    <div style="display: flex; justify-content: space-around; align-items: center;">
+                        <a @click="editProduct(text ?? null)">
+                            <EditOutlined style="color: #f9c93e; font-size: 18px;" />
+                        </a>
+                        <a @click="deleteProduct(text)">
+                            <DeleteOutlined style="color: #f93e6e; font-size: 18px;"/>
+                        </a>
+                    </div>
                 </template>
-                <template v-else-if="column.dataIndex === 'delete'">
-                    <a @click="deleteProduct(text)">Delete</a>
-                </template>
+
             </template>
         </a-table>
     </div>
@@ -32,47 +37,46 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 
 
 const columns = [
     {
         title: 'Id',
         dataIndex: 'id',
-        width: 100,
+        width: 50,
     },
     {
         title: 'Name',
         dataIndex: 'name',
-        width: 150,
     },
     {
         title: 'Image',
         dataIndex: 'image',
         bodyCell: { customRender: "image" },
-        width: 120,
+        width: 100,
     },
     {
         title: 'Price',
         dataIndex: 'price',
-        width: 150,
     },
     {
-        title: 'Quantity ',
+        title: 'Quantity',
         dataIndex: 'quantity',
+    },
+    {
+        title: 'Description',
+        dataIndex: 'description',
+        ellipsis: true,
     },
     {
         title: 'Category',
         dataIndex: 'category',
     },
     {
-        title: 'Edit',
-        dataIndex: 'edit',
-        bodyCell: { customRender: 'edit' },
-    },
-    {
-        title: 'Delete',
-        dataIndex: 'delete',
-        bodyCell: { customRender: 'delete' },
+        title: 'Action',
+        dataIndex: 'action',
+        bodyCell: { customRender: 'action' },
     },
 ];
 
@@ -91,10 +95,9 @@ const fetchProducts = async () => {
             image: product.image,
             price: product.price,
             quantity: product.quantityInStock,
+            description: product.description,
             category: product.category,
-            edit: product.id,
-            delete: product.id,
-
+            action: product.id,
         }));
 
 
