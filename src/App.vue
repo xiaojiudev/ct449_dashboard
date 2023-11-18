@@ -1,5 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import { HomeOutlined, UserOutlined, ShopOutlined, ShoppingCartOutlined, LogoutOutlined } from '@ant-design/icons-vue';
+
 import Logout from './views/auth/Logout.vue';
 </script>
 
@@ -24,7 +26,7 @@ import Logout from './views/auth/Logout.vue';
             </a>
             <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
                 <a-menu-item key="1">
-                    <pie-chart-outlined />
+                    <HomeOutlined />
                     <span>
                         <RouterLink to="/">Home</RouterLink>
                     </span>
@@ -43,7 +45,7 @@ import Logout from './views/auth/Logout.vue';
                 <a-sub-menu key="sub2">
                     <template #title>
                         <span>
-                            <team-outlined />
+                            <ShopOutlined />
                             <span>Products</span>
                         </span>
                     </template>
@@ -55,21 +57,22 @@ import Logout from './views/auth/Logout.vue';
                     </a-menu-item>
                 </a-sub-menu>
                 <a-menu-item key="2">
-                    <desktop-outlined />
-                    <RouterLink to="/orders">Orders</RouterLink>
+                    <ShoppingCartOutlined />
+                    <span>
+                        <RouterLink to="/orders">Orders</RouterLink>
+                    </span>
                 </a-menu-item>
                 <a-menu-item key="9">
-                    <file-outlined />
-                    <!-- <span>Logout</span> -->
-                    <Logout/>
+                    <LogoutOutlined />
+                    <span>
+                        <Logout />
+                    </span>
                 </a-menu-item>
             </a-menu>
         </a-layout-sider>
         <a-layout>
             <a-layout-header style="background: #fff; padding: 0" />
             <a-layout-content style="margin: 0 16px">
-
-
                 <RouterView />
             </a-layout-content>
             <a-layout-footer style="text-align: center">
