@@ -1,7 +1,8 @@
 <template>
-    <a-form :model="formState" name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" autocomplete="off"
+    <a-form :model="formState" name="login" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" autocomplete="off"
         @finish="onFinish" @finishFailed="onFinishFailed">
-        <a-form-item label="Email" name="email" :rules="[{ required: true, message: 'Please input your email!' }]">
+        <a-form-item label="Email" name="email"
+            :rules="[{ required: true, type: 'email', message: 'Please input your email!' }]">
             <a-input v-model:value="formState.email" />
         </a-form-item>
 
@@ -14,32 +15,33 @@
         </a-form-item>
     </a-form>
 </template>
+
 <script lang="ts" setup>
 import { reactive } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import { message } from 'ant-design-vue';
+
 
 interface FormState {
     email: string;
     password: string;
-    remember: boolean;
 }
 
 const formState = reactive<FormState>({
     email: '',
     password: '',
-    remember: true,
 });
 
-const router = useRouter(); 
+const router = useRouter();
 
 const onFinish = async (values: any) => {
     try {
         const { email, password } = values;
 
         const response = await axios.post('http://localhost:8080/api/v1/auth/login', {
-            email,
-            password,
+            email: email,
+            password: password,
         }, {
             withCredentials: true,
         });
@@ -49,20 +51,25 @@ const onFinish = async (values: any) => {
         if (msg === "Login successful!") {
             console.log('User:', user);
 
+            message.success('Login successfully');
             router.push({ path: '/' })
+
         } else {
             console.error('Login failed:', msg);
-
+            message.warn('Login failed:');
         }
     } catch (error) {
         console.error('Login failed:', error);
-
+        message.error('Login failed:');
     }
 };
 
 const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
+    message.error('Login failed:');
 };
+
+
 </script>
   
   
