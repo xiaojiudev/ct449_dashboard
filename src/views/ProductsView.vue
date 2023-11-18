@@ -4,10 +4,18 @@
         <a-breadcrumb-item>All Products</a-breadcrumb-item>
     </a-breadcrumb>
     <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
-        <a-table :columns="columns" :data-source="data" :pagination="{ pageSize: 8 }" rowKey="id">
+        <a-button type="primary" style="margin-bottom: 16px" @click="editProduct(null)">
+            Add product
+        </a-button>
+        <a-table :columns="columns" :data-source="data" :pagination="{ pageSize: 8 }" rowKey="id" bordered>
             <template #bodyCell="{ column, text }">
                 <template v-if="column.dataIndex === 'image'">
                     <img :src="text" alt="" style="object-fit: cover; width: 100px; height: 100px;">
+                </template>
+                <template v-if="column.dataIndex === 'category'">
+                    <a-tag :key="text" :color="text === 'flower' ? 'green' : text.length > 5 ? 'geekblue' : 'volcano'">
+                        {{ text.toUpperCase() }}
+                    </a-tag>
                 </template>
                 <template v-if="column.dataIndex === 'edit'">
                     <a @click="editProduct(text ?? null)">Edit</a>
@@ -22,6 +30,10 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+import { message } from 'ant-design-vue';
+
+
 const columns = [
     {
         title: 'Id',
@@ -66,6 +78,8 @@ const columns = [
 
 const data = ref([]);
 
+const router = useRouter();
+
 const fetchProducts = async () => {
     try {
         const response = await axios.get('http://localhost:8080/api/v1/products');
@@ -89,8 +103,9 @@ const fetchProducts = async () => {
         console.error('Error fetching products:', error);
     }
 };
-const editProduct = (index) => {
-    console.log('Edit product:', index);
+const editProduct = (productId) => {
+    console.log('Edit product:', productId);
+    router.push(`/products/${productId}`);
 };
 
 const deleteProduct = async (productId) => {
@@ -101,13 +116,13 @@ const deleteProduct = async (productId) => {
         });
 
         if (response.status === 200) {
+            message.success(`Product ${productId} deleted successfully`, 2);
             await fetchProducts();
-            console.log('Product deleted:', productId);
         }
-        console.log(productId);
 
     } catch (error) {
         console.error('Error deleting product:', error);
+        message.success('Error when deleting product', error);
     }
 };
 
