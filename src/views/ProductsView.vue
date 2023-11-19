@@ -12,7 +12,7 @@
                 <template v-if="column.dataIndex === 'description'">
                     <a-tooltip :overlay-inner-style="{ maxHeight: '50vh', 'overflow-y': 'scroll' }">
                         <template #title>
-                            <span v-html="text"></span>
+                            <span v-html="text" class="tooltip-custom"></span>
                         </template>
                         <p v-html="text"
                             style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
@@ -145,4 +145,8 @@ onMounted(() => {
 });
 </script>
   
-  
+<style >
+.tooltip-custom > p > * {
+    color: #fff !important;
+}
+</style>
