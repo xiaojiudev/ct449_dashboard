@@ -40,8 +40,8 @@ const columns = [
         width: 50,
     },
     {
-        title: 'User',
-        dataIndex: 'user',
+        title: 'Username',
+        dataIndex: 'Username',
     },
     {
         title: 'Product List',

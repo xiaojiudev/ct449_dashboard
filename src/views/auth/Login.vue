@@ -48,15 +48,13 @@ const onFinish = async (values: any) => {
 
         const { user, msg } = response.data;
 
-        if (msg === "Login successful!") {
-            console.log('User:', user);
+        if (msg === "Login successful!" && user.role == "admin") {
 
             message.success('Login successfully');
             router.push({ path: '/' })
 
         } else {
-            console.error('Login failed:', msg);
-            message.warn('Login failed:');
+            message.error('Access denied');
         }
     } catch (error) {
         console.error('Login failed:', error);
