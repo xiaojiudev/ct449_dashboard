@@ -4,13 +4,23 @@
         <a-breadcrumb-item>All Products</a-breadcrumb-item>
     </a-breadcrumb>
     <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
-        <a-button type="primary" size="large"  style="float: right; margin-bottom: 16px;" @click="editProduct(null)">
+        <a-button type="primary" size="large" style="float: right; margin-bottom: 16px;" @click="editProduct(null)">
             Add product
         </a-button>
         <a-table :columns="columns" :data-source="data" :pagination="{ pageSize: 8 }" rowKey="id" bordered>
             <template #bodyCell="{ column, text }">
+                <template v-if="column.dataIndex === 'description'">
+                    <a-tooltip :overlay-inner-style="{ maxHeight: '50vh', 'overflow-y': 'scroll' }">
+                        <template #title>
+                            <span v-html="text"></span>
+                        </template>
+                        <p v-html="text"
+                            style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
+                        </p>
+                    </a-tooltip>
+                </template>
                 <template v-if="column.dataIndex === 'image'">
-                    <img :src="text" alt="" style="object-fit: cover; width: 100px; height: 100px;">
+                    <img :src="text" alt="" style="object-fit: cover; width: 100%; height: 80px; border-radius: 3px;">
                 </template>
                 <template v-if="column.dataIndex === 'category'">
                     <a-tag :key="text" :color="text === 'flower' ? 'green' : text.length > 5 ? 'geekblue' : 'volcano'">
@@ -22,9 +32,11 @@
                         <a @click="editProduct(text ?? null)">
                             <EditOutlined style="color: #f9c93e; font-size: 18px;" />
                         </a>
-                        <a @click="deleteProduct(text)">
-                            <DeleteOutlined style="color: #f93e6e; font-size: 18px;"/>
-                        </a>
+                        <a-popconfirm title="Sure to delete?" @confirm="deleteProduct(text)">
+                            <a>
+                                <DeleteOutlined style="color: #f93e6e; font-size: 18px;" />
+                            </a>
+                        </a-popconfirm>
                     </div>
                 </template>
 
@@ -54,7 +66,6 @@ const columns = [
         title: 'Image',
         dataIndex: 'image',
         bodyCell: { customRender: "image" },
-        width: 100,
     },
     {
         title: 'Price',
