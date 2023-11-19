@@ -18,10 +18,6 @@
                     :rules="[{ required: true, type: 'number', min: 0, max: 99999 }]">
                     <a-input-number v-model:value="formState.quantity" />
                 </a-form-item>
-                <a-form-item name="description" label="Description" :rules="[{ required: true }]">
-                    <!-- <a-textarea v-model:value="formState.description" /> -->
-
-                </a-form-item>
                 <a-form-item label="Image" name="image" :rules="[{ required: imageUrl ? false : true }]">
                     <a-upload v-model:fileList="formState.image" :max-count="1" :before-upload="beforeUpload"
                         list-type="picture-card">
@@ -38,6 +34,10 @@
                         <a-select-option value="flower">Flower</a-select-option>
                     </a-select>
                 </a-form-item>
+                <a-form-item name="description" label="Description" :rules="[{ required: true }]">
+                    <!-- <a-textarea v-model:value="formState.description" /> -->
+                    <QuillEditor theme="snow" toolbar="full" v-model:content="formState.description" content-type="html" style="min-height: 200px;"/>
+                </a-form-item>
                 <a-form-item :wrapper-col="{ ...layout.wrapperCol, offset: 8 }">
                     <a-button type="primary" html-type="submit" :disabled="isSubmitting">Submit</a-button>
                 </a-form-item>
@@ -53,10 +53,12 @@ import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import type { UploadProps } from 'ant-design-vue';
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 16 },
+    labelCol: { span: 2 },
+    wrapperCol: { span: 22 },
 };
 
 const validateMessages = {
@@ -185,6 +187,8 @@ onMounted(async () => {
         await fetchProductDetails();
     }
 });
+
+
 
 </script>
   
