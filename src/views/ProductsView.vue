@@ -3,7 +3,7 @@
         <a-breadcrumb-item>Products</a-breadcrumb-item>
         <a-breadcrumb-item>All Products</a-breadcrumb-item>
     </a-breadcrumb>
-    <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
+    <div :style="{ padding: '16px', background: '#fff', minHeight: '360px' }">
         <a-button type="primary" size="large" style="float: right; margin-bottom: 16px;" @click="editProduct(null)">
             Add product
         </a-button>
@@ -54,9 +54,9 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 
 const columns = [
     {
-        title: 'Id',
+        title: 'S.No',
         dataIndex: 'id',
-        width: 50,
+        width: 70,
     },
     {
         title: 'Name',
