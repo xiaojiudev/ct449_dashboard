@@ -40,7 +40,7 @@ const router = createRouter({
       path: '/login',
       component: Login,
       name: 'login',
-      meta: {}
+      meta: { layout: 'LoginLayout' },
     },
     {
       path: '/logout',
