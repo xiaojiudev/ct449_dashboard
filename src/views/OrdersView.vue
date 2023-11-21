@@ -8,13 +8,13 @@
                 <template #bodyCell="{ text, record, index, column }">
                     <template v-if="column.dataIndex === 'customer'">
                         <a-tooltip :overlay-inner-style="{ maxHeight: '50vh', 'overflow-y': 'scroll' }">
-                        <template #title>
-                            <span v-html="text.address"></span>
-                        </template>
-                        <span v-html="text.fullname"
-                            style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
-                        </span>
-                    </a-tooltip>
+                            <template #title>
+                                <span v-html="text.address"></span>
+                            </template>
+                            <span v-html="text.fullname"
+                                style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
+                            </span>
+                        </a-tooltip>
                     </template>
                     <template v-if="column.dataIndex === 'order_amount'">
                         <span>$</span>
@@ -46,12 +46,13 @@
                     </template>
                     <template v-if="column.dataIndex === 'action'">
                         <div style="display: flex; justify-content: space-around; align-items: center;">
-                            <a @click="setOrderStatus(record, 'canceled')">
+                            <a-button @click="setOrderStatus(record, 'canceled')"
+                                :disabled="record.status === 'paid' ? true : record.status === 'delivered' ? true : record.status ==='canceled' ? true : false"> 
                                 <CloseOutlined style="color: #f9c93e; font-size: 18px;" />
-                            </a>
-                            <a @click="setOrderStatus(record, 'delivered')">
+                            </a-button>
+                            <a-button @click="setOrderStatus(record, 'delivered')" :disabled="record.status === 'pending' ? false : true" style="margin-left: 12px;">
                                 <CheckOutlined style="color: #f93e6e; font-size: 18px;" />
-                            </a>
+                            </a-button>
                         </div>
                     </template>
                 </template>
@@ -168,7 +169,7 @@ const setOrderStatus = async (record, status) => {
         const data = {
             status: status,
         }
-        const startTime = new Date().getTime(); 
+        const startTime = new Date().getTime();
         isSubmitting.value = true;
 
         const res = await axios.patch(`http://localhost:8080/api/v1/orders/${orderId}/updateStatus`, data, {
@@ -178,7 +179,7 @@ const setOrderStatus = async (record, status) => {
             withCredentials: true,
         });
 
-        const endTime = new Date().getTime(); 
+        const endTime = new Date().getTime();
         console.log(`Time taken for ${status}: ${endTime - startTime} ms`);
 
         if (res.status === 200) {
