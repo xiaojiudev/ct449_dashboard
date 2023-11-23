@@ -31,6 +31,12 @@ const router = createRouter({
       meta: { requiresAuth: true, },
     },
     {
+      path: '/orders/:id',
+      name: 'orders_detail',
+      component: () => import('../views/OrdersView.vue'),
+      meta: { requiresAuth: true, },
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),
@@ -46,7 +52,13 @@ const router = createRouter({
       path: '/logout',
       component: Logout,
       name: 'logout',
-      meta: {requiresAuth: true,},
+      meta: { requiresAuth: true, },
+    },
+    {
+      path: '/:catchAll(.*)',
+      name: 'NotFound',
+      component: () => import('../views/404NotFoundView.vue'),
+      meta: { requiresAuth: true, },
     },
   ]
 })
@@ -55,7 +67,7 @@ router.beforeEach((to, from, next) => {
 
   if (to.matched.some(route => route.meta.requiresAuth)) {
 
-    const token = getCookie('token'); 
+    const token = getCookie('token');
 
     if (!token) {
 
@@ -72,7 +84,7 @@ router.beforeEach((to, from, next) => {
 export function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  
+
   if (parts.length === 2) {
     return parts.pop().split(';').shift();
   }
