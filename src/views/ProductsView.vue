@@ -8,6 +8,32 @@
             Add product
         </a-button>
         <a-table :columns="columns" :data-source="data" :pagination="{ pageSize: 8 }" rowKey="id" bordered>
+            <template #headerCell="{ column }">
+                <template v-if="column.key === 'name'">
+                    <span style="color: #1890ff">Name</span>
+                </template>
+            </template>
+            <template #customFilterDropdown="{ setSelectedKeys, selectedKeys, confirm, clearFilters, column }">
+                <div style="padding: 8px">
+                    <a-input ref="searchInput" :placeholder="`Search ${column.dataIndex}`" :value="selectedKeys[0]"
+                        style="width: 188px; margin-bottom: 8px; display: block"
+                        @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
+                        @pressEnter="handleSearch(selectedKeys, confirm, column.dataIndex)" />
+                    <a-button type="primary" size="small" style="width: 90px; margin-right: 8px"
+                        @click="handleSearch(selectedKeys, confirm, column.dataIndex)">
+                        <template #icon>
+                            <SearchOutlined />
+                        </template>
+                        Search
+                    </a-button>
+                    <a-button size="small" style="width: 90px" @click="handleReset(clearFilters)">
+                        Reset
+                    </a-button>
+                </div>
+            </template>
+            <template #customFilterIcon="{ filtered }">
+                <SearchOutlined :style="{ color: filtered ? '#108ee9' : undefined }" />
+            </template>
             <template #bodyCell="{ column, text }">
                 <template v-if="column.dataIndex === 'description'">
                     <a-tooltip :overlay-inner-style="{ maxHeight: '50vh', 'overflow-y': 'scroll' }">
@@ -45,22 +71,34 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
+import { EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons-vue';
 
 
 const columns = [
     {
         title: 'S.No',
         dataIndex: 'id',
+        defaultSortOrder: 'ascend',
+        sorter: (a, b) => a.id - b.id,
         width: 70,
     },
     {
+        key: 'name',
         title: 'Name',
         dataIndex: 'name',
+        customFilterDropdown: true,
+        onFilter: (value, record) => record.name.toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: visible => {
+            if (visible) {
+                setTimeout(() => {
+                    searchInput.value.focus();
+                }, 100);
+            }
+        },
     },
     {
         title: 'Image',
@@ -70,10 +108,13 @@ const columns = [
     {
         title: 'Price',
         dataIndex: 'price',
+        sorter: (a, b) => a.price - b.price,
     },
     {
         title: 'Quantity',
         dataIndex: 'quantity',
+        // defaultSortOrder: 'descend',
+        sorter: (a, b) => a.quantity - b.quantity,
     },
     {
         title: 'Description',
@@ -83,6 +124,11 @@ const columns = [
     {
         title: 'Category',
         dataIndex: 'category',
+        filters: [
+            { text: 'flower', value: 'flower' },
+            { text: 'bag', value: 'bag' },
+        ],
+        onFilter: (value, record) => record.category.indexOf(value) === 0,
     },
     {
         title: 'Action',
@@ -143,10 +189,28 @@ const deleteProduct = async (productId) => {
 onMounted(() => {
     fetchProducts();
 });
+
+const state = reactive({
+    searchText: '',
+    searchedColumn: '',
+});
+
+const searchInput = ref();
+
+const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    state.searchText = selectedKeys[0];
+    state.searchedColumn = dataIndex;
+};
+
+const handleReset = clearFilters => {
+    clearFilters({ confirm: true });
+    state.searchText = '';
+};
 </script>
   
 <style >
-.tooltip-custom > p > * {
+.tooltip-custom>p>* {
     color: #fff !important;
 }
 </style>
