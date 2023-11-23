@@ -32,6 +32,7 @@
                 <a-form-item label="Category" name="category" :rules="[{ required: true }]">
                     <a-select v-model:value="formState.category" placeholder="please select your category">
                         <a-select-option value="flower">Flower</a-select-option>
+                        <a-select-option value="bag">Hand bag</a-select-option>
                     </a-select>
                 </a-form-item>
                 <a-form-item name="description" label="Description" :rules="[{ required: true }]">
