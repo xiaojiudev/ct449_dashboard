@@ -111,10 +111,15 @@ const columns = [
         sorter: (a, b) => a.price - b.price,
     },
     {
+        key: 'quantity',
         title: 'Quantity',
         dataIndex: 'quantity',
         // defaultSortOrder: 'descend',
         sorter: (a, b) => a.quantity - b.quantity,
+        filters: [
+            { text: '0', value: '0' },
+        ],
+        onFilter: (value, record) => record.category.indexOf(value) === 0,
     },
     {
         title: 'Description',
