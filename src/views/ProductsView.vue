@@ -119,7 +119,7 @@ const columns = [
         filters: [
             { text: '0', value: '0' },
         ],
-        onFilter: (value, record) => record.category.indexOf(value) === 0,
+        onFilter: (value, record) => record.quantity === parseInt(value),
     },
     {
         title: 'Description',
