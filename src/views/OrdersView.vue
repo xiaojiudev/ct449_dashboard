@@ -29,10 +29,17 @@
                         <a-popover :v-model:open="visible" title="Order Detail" trigger="click">
                             <template #content>
                                 <div v-for="(item, index) in record.invoice" :key="index">
-                                    <p>
-                                        {{ `ID: ${item.product} - Name: ${item.name} - Quantity: ${item.quantity} - Price:
-                                                                                ${item.price}` }}
-                                    </p>
+                                    <div style="width: 400px;">
+                                        <a-row :gutter="[16, 16]" style="margin-top: 18px;" justify="center" align="middle">
+                                            <a-col :span="3">
+                                                <a-avatar :src="item.image" />
+                                            </a-col>
+                                            <a-col :span="9">{{ item.name }}</a-col>
+                                            <a-col :span="4">x{{ item.quantity }}</a-col>
+                                            <a-col :span="4">${{ (item.price).toFixed(2) }}</a-col>
+                                            <a-col :span="4">${{ (item.price * item.quantity).toFixed(2) }}</a-col>
+                                        </a-row>
+                                    </div>
                                 </div>
                             </template>
                             <a style="user-select: none;">Details</a>
@@ -47,10 +54,11 @@
                     <template v-if="column.dataIndex === 'action'">
                         <div style="display: flex; justify-content: space-around; align-items: center;">
                             <a-button @click="setOrderStatus(record, 'canceled')"
-                                :disabled="record.status === 'paid' ? true : record.status === 'delivered' ? true : record.status ==='canceled' ? true : false"> 
+                                :disabled="record.status === 'paid' ? true : record.status === 'delivered' ? true : record.status === 'canceled' ? true : false">
                                 <CloseOutlined style="color: #f9c93e; font-size: 18px;" />
                             </a-button>
-                            <a-button @click="setOrderStatus(record, 'delivered')" :disabled="record.status === 'pending' ? false : true" style="margin-left: 12px;">
+                            <a-button @click="setOrderStatus(record, 'delivered')"
+                                :disabled="record.status === 'pending' ? false : true" style="margin-left: 12px;">
                                 <CheckOutlined style="color: #f93e6e; font-size: 18px;" />
                             </a-button>
                         </div>
