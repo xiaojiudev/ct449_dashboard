@@ -4,7 +4,7 @@
     </a-breadcrumb>
     <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
         <a-spin :spinning="isSubmitting">
-            <a-table :columns="columns" :data-source="data" :pagination="{ pageSize: 8 }" rowKey="id" bordered>
+            <a-table :columns="columns" :data-source="data" :pagination="{ pageSize: 8 }" :rowKey="record => record.key" bordered>
                 <template #headerCell="{ column }">
                     <template v-if="column.key === 'customer'">
                         <span style="color: #1890ff">Customer</span>
