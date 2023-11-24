@@ -57,6 +57,7 @@
                     <template v-if="column.dataIndex === 'invoice'">
                         <a-popover :v-model:open="visible" title="Order Detail" trigger="click">
                             <template #content>
+                                {{ console.log("All invoice is: ", record.invoice) }}
                                 <div v-for="(item, index) in record.invoice" :key="index">
                                     <div style="width: 400px;">
                                         <a-row :gutter="[16, 16]" style="margin-top: 18px;" justify="center" align="middle">
@@ -73,6 +74,7 @@
                             </template>
                             <a style="user-select: none;">Details</a>
                         </a-popover>
+                        <!-- <div>{{ record }}</div> -->
                     </template>
                     <template v-if="column.dataIndex === 'status'">
                         <a-tag :key="text"
@@ -167,15 +169,6 @@ const columns = [
         key: 'status',
         title: 'Status',
         dataIndex: 'status',
-        // customFilterDropdown: true,
-        // onFilter: (value, record) => record.status.toString().toLowerCase().includes(value.toLowerCase()),
-        // onFilterDropdownOpenChange: visible => {
-        //     if (visible) {
-        //         setTimeout(() => {
-        //             searchInput.value.focus();
-        //         }, 100);
-        //     }
-        // },
         filters: [
             { text: 'pending', value: 'pending' },
             { text: 'canceled', value: 'canceled' },
@@ -245,6 +238,9 @@ const fetchAllOrders = async () => {
             invoice: order.orderItems,
             status: order.status,
         }))
+
+        console.log(data.value);
+
 
     } catch (error) {
         message.error("Failed while fetching all orders");
