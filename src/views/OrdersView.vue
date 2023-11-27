@@ -55,9 +55,9 @@
                         </a-tag>
                     </template>
                     <template v-if="column.dataIndex === 'invoice'">
+                        {{ console.log("All invoice is: ", record.invoice) }}
                         <a-popover :v-model:open="visible" title="Order Detail" trigger="click">
                             <template #content>
-                                {{ console.log("All invoice is: ", record.invoice) }}
                                 <div v-for="(item, index) in record.invoice" :key="index">
                                     <div style="width: 400px;">
                                         <a-row :gutter="[16, 16]" style="margin-top: 18px;" justify="center" align="middle">
@@ -239,8 +239,7 @@ const fetchAllOrders = async () => {
             status: order.status,
         }))
 
-        console.log(data.value);
-
+        // console.log(data.value);
 
     } catch (error) {
         message.error("Failed while fetching all orders");

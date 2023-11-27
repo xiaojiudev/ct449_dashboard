@@ -15,7 +15,7 @@ import Logout from '../views/auth/Logout.vue';
                 <a-menu-item key="1">
                     <HomeOutlined />
                     <span>
-                        <RouterLink to="/">Home</RouterLink>
+                        <RouterLink to="/">Overview</RouterLink>
                     </span>
                 </a-menu-item>
                 <a-sub-menu key="sub1">
@@ -57,7 +57,7 @@ import Logout from '../views/auth/Logout.vue';
                 <RouterView />
             </a-layout-content>
             <a-layout-footer style="text-align: center">
-                Ant Design ©2018 Created by Ant UED
+                ©2023 Created by Ly Phat
             </a-layout-footer>
         </a-layout>
     </a-layout>

@@ -1,70 +1,164 @@
 <template>
     <a-breadcrumb style="margin: 16px 0">
-        <a-breadcrumb-item>Home</a-breadcrumb-item>
+        <a-breadcrumb-item>Overview</a-breadcrumb-item>
+        <a-breadcrumb-item>Statistic</a-breadcrumb-item>
     </a-breadcrumb>
-    <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
+    <div :style="{ padding: '24px', background: '#eae9e9', minHeight: '360px' }">
         <a-row :gutter="[16, 16]">
             <a-col :span="12">
-                <div style="background: #ececec; padding: 30px; width: 500px;">
-                    <a-row :gutter="16">
-                        <a-col :span="12">
-                            <a-card>
-                                <a-statistic title="Feedback" :value="11.28" :precision="2" suffix="%"
-                                    :value-style="{ color: '#3f8600' }" style="margin-right: 50px">
-                                    <template #prefix>
-                                        <arrow-up-outlined />
-                                    </template>
-                                </a-statistic>
-                            </a-card>
-                        </a-col>
-                        <a-col :span="12">
-                            <a-card>
-                                <a-statistic title="Idle" :value="9.3" :precision="2" suffix="%" class="demo-class"
-                                    :value-style="{ color: '#cf1322' }">
-                                    <template #prefix>
-                                        <arrow-down-outlined />
-                                    </template>
-                                </a-statistic>
-                            </a-card>
-                        </a-col>
-                    </a-row>
-                </div>
+                <a-table :columns="productStatColumns" :data-source="productStats" bordered>
+                    <template #bodyCell="{ column, text }">
+                        <template v-if="column.dataIndex === 'name'">
+                            <a>{{ text }}</a>
+                        </template>
+                    </template>
+                    <template #title>
+                        <div style="font-weight: 600; text-align: center; font-size: 22px; color: #3f8600">
+                            Product Stats
+                        </div>
+                    </template>
+                    <!-- <template #footer>Footer</template> -->
+                </a-table>
             </a-col>
             <a-col :span="12">
-                <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
-                    <a-progress type="circle" :stroke-color="{
-                        '0%': '#108ee9',
-                        '100%': '#87d068',
-                    }" :percent="90" />
-                </div>
-            </a-col>
-            <a-col :span="4">
-                <a-statistic title="Total Orders" :value="112893" style="margin-right: 50px" />
-            </a-col>
-            <a-col :span="4">
-                <a-statistic title="Total Profit ($)" :precision="2" :value="112893" />
-            </a-col>
-            <a-col :span="4">
-                <a-statistic title="Feedback" :value="1128" style="margin-right: 50px">
-                    <template #suffix>
-                        <like-outlined />
+                <a-row :gutter="[16, 16]">
+                    <a-col :span="12">
+                        <a-card>
+                            <a-statistic title="Total Revenue" :value="totalRevenue" :precision="2" suffix="$"
+                                :value-style="{ color: '#3f8600' }" style="margin-right: 50px">
+                                <template #prefix>
+                                    <arrow-up-outlined />
+                                </template>
+                            </a-statistic>
+                        </a-card>
+                    </a-col>
+                    <a-col :span="12">
+                        <a-card>
+                            <a-statistic title="Total Orders" :value="totalOrders" :precision="0" suffix="orders"
+                                :value-style="{ color: '#3f8600' }" style="margin-right: 50px">
+                                <template #prefix>
+                                    <arrow-up-outlined />
+                                </template>
+                            </a-statistic>
+                        </a-card>
+                    </a-col>
+                </a-row>
+                <a-divider />
+                <a-table :columns="dailyRevenueColumns" :data-source="dailyRevenue" bordered>
+                    <template #bodyCell="{ column, text }">
+                        <template v-if="column.dataIndex === 'name'">
+                            <a>{{ text }}</a>
+                        </template>
                     </template>
-                </a-statistic>
-            </a-col>
-            <a-col :span="4">
-                <a-statistic title="Unmerged" :value="93" class="demo-class">
-                    <template #suffix>
-                        <span>/ 100</span>
+                    <template #title>
+                        <div style="font-weight: 600; text-align: center; font-size: 22px; color: #3f8600">
+                            Daily Revenue
+                        </div>
                     </template>
-                </a-statistic>
+                </a-table>
             </a-col>
-        </a-row>
-        <a-row>
-
+            <a-col :span="24">
+                <a-table :columns="ordersByDayColumns" :data-source="ordersByDay" bordered>
+                    <template #bodyCell="{ column, text }">
+                        <template v-if="column.dataIndex === 'name'">
+                            <a>{{ text }}</a>
+                        </template>
+                    </template>
+                    <template #title>
+                        <div style="font-weight: 600; text-align: center; font-size: 22px; color: #3f8600">
+                            Order by Day
+                        </div>
+                    </template>
+                </a-table>
+            </a-col>
         </a-row>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { ArrowUpOutlined, ArrowDownOutlined, LikeOutlined  } from '@ant-design/icons-vue';
+import { reactive } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import axios from 'axios';
+
+
+const productStats = ref([])
+const dailyRevenue = ref([]);
+const ordersByDay = ref([]);
+const totalRevenue = ref(0);
+const totalOrders = ref(0);
+
+
+const productStatColumns = [
+    {
+        title: 'Product Name',
+        dataIndex: 'productName',
+    },
+    {
+        title: 'Total Quantity Sold',
+        dataIndex: 'totalQuantitySold',
+    },
+    {
+        title: 'Unit Price',
+        dataIndex: 'unitPrice',
+    },
+    {
+        title: 'Total Cost',
+        dataIndex: 'totalCost',
+    },
+];
+
+
+const dailyRevenueColumns = [
+    {
+        title: 'Date',
+        dataIndex: '_id',
+    },
+    {
+        title: 'Total Revenue',
+        dataIndex: 'totalRevenue',
+    },
+];
+
+const ordersByDayColumns = [
+    {
+        title: 'Date',
+        dataIndex: '_id',
+    },
+    {
+        title: 'Total Orders',
+        dataIndex: 'totalOrders',
+    },
+];
+
+
+
+
+
+
+onMounted(async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/api/v1/statistic', {
+            withCredentials: true,
+        });
+
+        productStats.value = response.data.productStats;
+        dailyRevenue.value = response.data.dailyRevenue;
+        ordersByDay.value = response.data.ordersByDay;
+
+        totalRevenue.value = calculateTotalValue(dailyRevenue.value, 'totalRevenue');
+
+        totalOrders.value = calculateTotalValue(ordersByDay.value, 'totalOrders');
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+});
+
+const calculateTotalValue = (data, field) => {
+    return data.reduce((total, item) => total + item[field], 0);
+};
+
+
+
 </script>
+
+
