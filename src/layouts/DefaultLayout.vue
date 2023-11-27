@@ -18,14 +18,14 @@ import Logout from '../views/auth/Logout.vue';
                         <RouterLink to="/">Overview</RouterLink>
                     </span>
                 </a-menu-item>
-                <a-sub-menu key="sub1">
+                <!-- <a-sub-menu key="sub1">
                     <template #title>
                         <span>
                             <user-outlined />
                             <span>User</span>
                         </span>
                     </template>
-                </a-sub-menu>
+                </a-sub-menu> -->
                 <a-sub-menu key="sub2">
                     <template #title>
                         <span>
