@@ -7,6 +7,7 @@
         <a-spin :spinning="isLoading">
             <a-row :gutter="[16, 16]">
                 <a-col :span="14">
+                    <!-- Product Stats -->
                     <a-table :columns="productStatColumns" :data-source="productStats" bordered>
                         <template #customFilterDropdown="{ setSelectedKeys, selectedKeys, confirm, clearFilters, column }">
                             <div style="padding: 8px">
@@ -66,10 +67,14 @@
                         </a-col>
                     </a-row>
                     <a-divider />
+                    <!-- Revenue -->
                     <a-table :columns="dailyRevenueColumns" :data-source="dailyRevenue" bordered>
                         <template #bodyCell="{ column, text }">
-                            <template v-if="column.dataIndex === 'name'">
+                            <!-- <template v-if="column.dataIndex === 'name'">
                                 <a>{{ text }}</a>
+                            </template> -->
+                            <template v-if="column.dataIndex === 'totalRevenue'">
+                                <span>{{ text.toFixed(2) }}</span>
                             </template>
                         </template>
                         <template #title>
@@ -80,11 +85,12 @@
                     </a-table>
                 </a-col>
                 <a-col :span="24">
+                    <!-- Orders -->
                     <a-table :columns="ordersByDayColumns" :data-source="ordersByDay" bordered>
                         <template #bodyCell="{ column, text }">
-                            <template v-if="column.dataIndex === 'name'">
+                            <!-- <template v-if="column.dataIndex === 'name'">
                                 <a>{{ text }}</a>
-                            </template>
+                            </template> -->
                         </template>
                         <template #title>
                             <div style="font-weight: 600; text-align: center; font-size: 22px; color: #4fa4e9">
@@ -225,7 +231,10 @@ onMounted(async () => {
 });
 
 const calculateTotalValue = (data, field) => {
-    return data.reduce((total, item) => total + item[field], 0);
+    return data.reduce((total, item) => {
+        // console.log(item);
+        return total + item[field]
+    }, 0);
 };
 
 
