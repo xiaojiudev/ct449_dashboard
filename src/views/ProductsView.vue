@@ -49,7 +49,8 @@
                     <img :src="text" alt="" style="object-fit: cover; width: 100%; height: 80px; border-radius: 3px;">
                 </template>
                 <template v-if="column.dataIndex === 'category'">
-                    <a-tag :key="text" :color="text === 'flower' ? 'green' : text.length > 5 ? 'geekblue' : 'volcano'">
+                    <a-tag :key="text"
+                        :color="text === 'flower' ? 'green' : text === 'bag' ? 'blue' : text === 'keychain' ? 'gold' : text === 'beanie' ? 'purple' : 'pink'">
                         {{ text.toUpperCase() }}
                     </a-tag>
                 </template>

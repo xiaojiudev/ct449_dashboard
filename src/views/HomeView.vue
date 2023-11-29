@@ -3,7 +3,7 @@
         <a-breadcrumb-item>Overview</a-breadcrumb-item>
         <a-breadcrumb-item>Statistic</a-breadcrumb-item>
     </a-breadcrumb>
-    <div :style="{ padding: '24px', background: '#eae9e9', minHeight: '360px' }">
+    <div :style="{ padding: '24px', background: '#e1e4e7', minHeight: '360px' }">
         <a-spin :spinning="isLoading">
             <a-row :gutter="[16, 16]">
                 <a-col :span="14">

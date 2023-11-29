@@ -55,7 +55,7 @@
                         </a-tag>
                     </template>
                     <template v-if="column.dataIndex === 'invoice'">
-                        {{ console.log("All invoice is: ", record.invoice) }}
+                        <!-- {{ console.log("All invoice is: ", record.invoice) }} -->
                         <a-popover :v-model:open="visible" title="Order Detail" trigger="click">
                             <template #content>
                                 <div v-for="(item, index) in record.invoice" :key="index">
