@@ -136,6 +136,7 @@ const productStatColumns = [
     {
         title: 'Unit Price',
         dataIndex: 'unitPrice',
+        sorter: (a, b) => a.unitPrice - b.unitPrice,
     },
     {
         title: 'Total Cost',

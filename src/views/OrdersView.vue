@@ -134,6 +134,17 @@ const columns = [
     {
         title: 'Order ID',
         dataIndex: 'order_id',
+        customFilterDropdown: true,
+        onFilter: (value, record) => {
+            return record.order_id.toString().toLowerCase().includes(value.toLowerCase())
+        },
+        onFilterDropdownOpenChange: visible => {
+            if (visible) {
+                setTimeout(() => {
+                    searchInput.value.focus();
+                }, 100);
+            }
+        },
     },
     {
         title: 'Order Date',

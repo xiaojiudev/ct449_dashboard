@@ -133,6 +133,9 @@ const columns = [
         filters: [
             { text: 'flower', value: 'flower' },
             { text: 'bag', value: 'bag' },
+            { text: 'keychain', value: 'keychain' },
+            { text: 'beanie', value: 'beanie' },
+            { text: 'glove', value: 'glove' },
         ],
         onFilter: (value, record) => record.category.indexOf(value) === 0,
     },
